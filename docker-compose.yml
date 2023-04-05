@@ -1,0 +1,59 @@
+version: '3.9'
+
+x-default-logging: &logging
+  driver: "json-file"
+  options:
+    max-size: "5m"
+    max-file: "2"
+
+services:
+  jaegertracing:
+    image: jaegertracing/all-in-one:1.41
+    container_name: jaegertracing
+    ports:
+      - 5778:5778
+      - 16686:16686 # application ui port
+      # - 4317:4317   # rest exporter port
+      - 4318:4318   # grpc exporter port
+      - 14250:14250
+      - 14269:14269
+      - 16685:16685
+      - 9411:9411
+    environment:
+      - COLLECTOR_ZIPKIN_HOST_PORT=9411
+      - COLLECTOR_OTLP_ENABLED=true
+    logging: *logging
+
+  app:
+    image: poc-traces-app
+    build: .
+    ports:
+      - 8000:8000
+    environment:
+      - OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+    logging: *logging
+    depends_on:
+      - jaegertracing
+
+  # jaeger:
+  #   image: jaegertracing/all-in-one
+  #   container_name: jaeger
+  #   command:
+  #     - "--memory.max-traces"
+  #     - "10000"
+  #     - "--query.base-path"
+  #     - "/jaeger/ui"
+  #     - "--prometheus.server-url"
+  #     - "http://${PROMETHEUS_ADDR}"
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         memory: 275M
+  #   restart: unless-stopped
+  #   ports:
+  #     - "${JAEGER_SERVICE_PORT}"                    # Jaeger UI
+  #     - "4317"                           # OTLP gRPC default port
+  #   environment:
+  #     - COLLECTOR_OTLP_ENABLED=true
+  #     - METRICS_STORAGE_TYPE=prometheus
+  #   # logging: *logging

@@ -1,0 +1,12 @@
+fastapi[all]
+opentelemetry-distro
+
+opentelemetry-exporter-otlp
+opentelemetry-exporter-otlp-proto-grpc
+opentelemetry-exporter-otlp-proto-http
+
+opentelemetry-instrumentation-fastapi==0.36b0
+opentelemetry-instrumentation-grpc==0.36b0
+requests
+opentelemetry-api
+opentelemetry-sdk
