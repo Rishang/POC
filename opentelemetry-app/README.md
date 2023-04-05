@@ -1,6 +1,6 @@
 Purpose:
 
-Its helpful for cases where you have to find time consuption traces of api routes/code for debuging api latency or code optimization
+Its helpful for microservices and huge applications where you have to find time consuption traces of api routes/code for debuging api latency or code optimization
 
 Refr:
 
